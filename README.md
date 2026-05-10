@@ -1,99 +1,126 @@
-Solana Jupiter Swap (Client + Server)
+````md
+# AI-Powered MEV Protection Engine for Solana
 
-A simple Solana token swap application built with Jupiter v6, consisting of a React (Vite) client and a Node.js (Express) proxy server.
+An AI + Web3 system that predicts risky swap execution conditions on Solana and protects users from unsafe trades and potential MEV exposure.
 
-The backend proxy is used to securely interact with Jupiter APIs and to enforce mainnet-only swaps.
+---
 
-Features
+# Features
 
-Swap SPL tokens using Jupiter Aggregator
+- AI-powered swap risk prediction
+- Jupiter swap integration
+- Dynamic slippage protection
+- Route complexity analysis
+- Real-time risk alerts
+- Solana blockchain transaction ingestion
+- Continuous ML retraining pipeline
+- FastAPI inference backend
 
-Real-time price quotes
+---
 
-Token balance checks
+# Architecture
 
-Prevents swaps with insufficient balance
+```text
+Frontend (client)
+        ↓
+Jupiter Proxy Server (server)
+        ↓
+AI Backend (backend)
+        ↓
+ML Risk Engine
+        ↓
+Solana Blockchain
+````
 
-Mainnet-only swap protection
+---
 
-No API keys exposed in the frontend
+# Project Structure
 
-Clean separation of client and server
+```text
+project/
+├── client/
+├── server/
+└── backend/
+```
 
-Architecture
-Client (Vite + React)
-        |
-        |  /jupiter/*
-        |
-Proxy Server (Express)
-        |
-        |  Jupiter v6 APIs
-        |
-Jupiter Aggregator (Mainnet)
+---
 
-Network Support
-Feature	Devnet	Mainnet
-Token list	✅	✅
-Quote	✅	✅
-Swap	❌	✅
+# Tech Stack
 
-Jupiter swaps only work on mainnet.
-This is enforced on the server.
+## Frontend
 
-Project Structure
-.
-├── client/        # React (Vite) frontend
-├── server/        # Express proxy server
-└── README.md
+* React
+* TypeScript
+* TailwindCSS
+* Solana Wallet Adapter
 
-Setup & Run
-1. Start the Server
-cd server
-npm install
-enter .env file with your Jupiter API key
-npm run dev
+## Backend
 
+* FastAPI
+* Scikit-learn
+* Pandas
+* NumPy
 
-Health check:
+## Server
 
-curl http://localhost:8787/health
+* Node.js
+* Express
+* TypeScript
 
-2. Start the Client
+## Blockchain
+
+* Solana
+* Jupiter Aggregator
+
+---
+
+# Local Setup
+
+## Client
+
+```bash
 cd client
 npm install
 npm run dev
+```
 
-Vite Proxy Configuration
+## Server
 
-The client uses a Vite proxy to forward requests to the backend.
+```bash
+cd server
+npm install
+npm run dev
+```
 
-client/vite.config.ts:
+## Backend
 
-server: {
-  proxy: {
-    "/jupiter": {
-      target: "http://localhost:8787",
-      changeOrigin: true
-    }
-  }
-}
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
 
-API Endpoints (Server)
-Get Tokens
-GET /jupiter/tokens
+---
 
-Get Quote
-GET /jupiter/quote
+# AI Pipeline
 
-Swap (Mainnet Only)
-POST /jupiter/swap
+```text
+Solana Transactions
+        ↓
+Listener
+        ↓
+Dataset Builder
+        ↓
+Model Training
+        ↓
+Risk Prediction API
+```
 
+---
 
-Request body:
+# Future Improvements
 
-{
-  "quoteResponse": { "exact quote from /quote" },
-  "userPublicKey": "BASE58_PUBLIC_KEY"
-}
-
-
+* Advanced DEX instruction decoding
+* Real-time websocket monitoring
+* Reinforcement learning execution engine
+* Cross-chain MEV analysis

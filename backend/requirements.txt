@@ -1,0 +1,17 @@
+fastapi==0.136.1
+uvicorn==0.46.0
+
+numpy==2.4.4
+pandas==2.3.3
+scikit-learn==1.7.2
+scipy==1.16.3
+joblib==1.5.3
+
+solana==0.36.11
+solders==0.27.1
+websockets==15.0.1
+
+pydantic==2.13.3
+starlette==1.0.0
+
+httpx==0.28.1

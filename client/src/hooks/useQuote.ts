@@ -52,7 +52,11 @@ export function useQuote({
           Number(amount),
           slippage
         );
-
+        if(!q) {
+          setQuote(null);
+          setError("No quote found");
+          throw new Error("No quote found");
+        }
         if (cancelled) return;
 
         setQuote(q);

@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { VersionedTransaction, Connection, PublicKey } from '@solana/web3.js'
 import axios from 'axios'
-
+import { Buffer } from 'buffer';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -42,18 +42,16 @@ export type JupiterQuote = {
   timeTaken: number;
 };
 
-
-const JUP_API_QUOTE = 'http://localhost:8787/jupiter/quote';
-const JUP_API_SWAP = 'http://localhost:8787/jupiter/swap';
-const JUP_LEND_API = "http://localhost:8787/jupiter/tokens"
+const BASE_URL = "http://localhost:8787";
+const JUP_API_QUOTE = `${BASE_URL}/jupiter/quote`;
+const JUP_API_SWAP = `${BASE_URL}/jupiter/swap`;
+const JUP_LEND_API = `${BASE_URL}/jupiter/tokens`
 
 export async function fetchEarnTokens(): Promise<TokenInfo[]> {
   try {
     const { data } = await axios.get<TokenInfo[]>(JUP_LEND_API);
-    console.log("Earn tokens fetched:", data);
     return data;
   } catch (error) {
-    console.error("Failed to fetch earn tokens:", error);
     throw new Error("Failed to fetch earn token list");
   }
 }
@@ -76,7 +74,6 @@ export async function getQuote(fromToken: TokenInfo, toToken: TokenInfo, amount:
     });
 
     if (!quoteData || !quoteData.outAmount) {
-      console.error("Invalid quote:", quoteData);
       throw new Error('No valid quote data found');
     }
     return quoteData;
@@ -108,7 +105,6 @@ export async function executeSwap(quoteResponse: JupiterQuote, connection: Conne
     );
 
     if (!swapResponse || typeof swapResponse.swapTransaction !== "string") {
-      console.error("Invalid Jupiter swap response:", swapResponse);
       throw new Error("Jupiter did not return a swapTransaction");
     }
 
@@ -136,11 +132,9 @@ export async function executeSwap(quoteResponse: JupiterQuote, connection: Conne
     lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
     signature: txid
     });
-    console.log(`https://solscan.io/tx/${txid}`);
 
     return txid;
-    } catch (error) {
-      console.error("Swap execution failed:", error);
+    } catch {
       throw new Error("Failed to execute swap transaction");
     }
 }
@@ -167,8 +161,7 @@ export async function getTokenBalance(
   try {
     mint = new PublicKey(token.id);
   } catch {
-    console.error("Invalid token mint:", token.id);
-    return 0;
+    throw new Error("Invalid token mint");
   }
 
   const accounts = await connection.getParsedTokenAccountsByOwner(

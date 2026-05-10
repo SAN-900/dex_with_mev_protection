@@ -15,7 +15,6 @@ export default function ExchangeFrame() {
     const wallet = useWallet();
     const {connection} = useConnection();
 
-    const [pageLoading, setPageLoading] = useState(false);
     const [swapLoading, setSwapLoading] = useState(false)
 
     const [tokenList, setTokenList] = useState<TokenInfo[]>([]);
@@ -278,9 +277,6 @@ export default function ExchangeFrame() {
         setSwapLoading(false);
       }
     };
-  if(pageLoading){
-    return <div className="flex h-full w-full items-center justify-center">Loading...</div>;
-  }
   return (
     <div className="flex h-full w-full items-center justify-center shadow-2xl">
       <div className="w-full min-w-96 rounded-lg bg-amber-50 dark:bg-neutral-900 p-4 dark:text-white text-gray-700">

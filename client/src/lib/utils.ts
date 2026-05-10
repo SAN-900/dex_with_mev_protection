@@ -42,7 +42,7 @@ export type JupiterQuote = {
   timeTaken: number;
 };
 
-const BASE_URL = "http://localhost:8787";
+const BASE_URL = import.meta.env.VITE_PROXY_URL;
 const JUP_API_QUOTE = `${BASE_URL}/jupiter/quote`;
 const JUP_API_SWAP = `${BASE_URL}/jupiter/swap`;
 const JUP_LEND_API = `${BASE_URL}/jupiter/tokens`

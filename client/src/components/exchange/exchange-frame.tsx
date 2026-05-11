@@ -112,9 +112,9 @@ export default function ExchangeFrame() {
     setError("");
   } 
 
-  // Risk API call
+  //API call
   const getRisk = async (data: any) => {
-      const res = await fetch("http://127.0.0.1:8000/predict-risk", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/predict-risk`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -206,10 +206,10 @@ export default function ExchangeFrame() {
         setSwapLoading(true);
         setError("");
 
-        // 🧠 STEP 1: Extract features
+        //Extract features
         const features = buildRiskFeatures(quote);
 
-        // 🧠 STEP 2: Call AI backend
+        //AI backend
         const riskRes = risk;
         if (!riskRes) {
           setError("Risk not calculated yet");
@@ -218,28 +218,27 @@ export default function ExchangeFrame() {
         }
 
         if (riskRes.risk > 0.9) {
-          alert("🚫 Extremely unsafe trade blocked.");
+          alert("Extremely unsafe trade blocked.");
           setSwapLoading(false);
           return;
         }
 
-        // 🔥 NEW: SMART RISK CONTROLS (ADD HERE)
         if (riskRes.risk > 0.6) {
             if (features.routeComplexity > 2) {
-              alert("⚠️ Unsafe route detected. Try smaller trade.");
+              alert("Unsafe route detected. Try smaller trade.");
               setSwapLoading(false);
               return;
             }
 
             const proceed = confirm(
-          `⚠️ HIGH MEV RISK (${(riskRes.risk * 100).toFixed(0)}%)
+          `HIGH MEV RISK (${(riskRes.risk * 100).toFixed(0)}%)
 
           Signals:
           • Price impact spike
           • Low liquidity
           • Complex route
 
-          ${features.amount > 2 ? "⚠️ Large trade detected\n" : ""}
+          ${features.amount > 2 ? "Large trade detected\n" : ""}
 
           Proceed anyway?`
             );
@@ -250,20 +249,18 @@ export default function ExchangeFrame() {
             }
           }
 
-        // 🔒 STEP 4: Auto Protect
         if (autoProtect && riskRes.risk > 0.6) {
           const saferSlippage = 0.5;
 
           if (slippage !== saferSlippage) {
             setSlippage(saferSlippage);
 
-            alert("🔒 Slippage reduced. Recalculating safer route...");
+            alert("Slippage reduced. Recalculating safer route...");
             setSwapLoading(false);
-            return; // ❗ STOP and let quote refresh
+            return; //
           }
         }
 
-        // 🚀 STEP 5: Execute swap
         const txid = await executeSwap(quote, connection, wallet);
 
         if (!txid) {
@@ -278,21 +275,42 @@ export default function ExchangeFrame() {
       }
     };
   return (
-    <div className="flex h-full w-full items-center justify-center shadow-2xl">
-      <div className="w-full min-w-96 rounded-lg bg-amber-50 dark:bg-neutral-900 p-4 dark:text-white text-gray-700">
+    <div className="h-screen w-full flex flex-col">
+      <div
+        className="
+          w-3/4
+          h-full
+          mx-auto
+          rounded-2xl
+          bg-amber-50
+          dark:bg-neutral-900
+          p-5
+          md:p-7
+          dark:text-white
+          text-gray-700
+          shadow-2xl
+          border
+          border-black/5
+          dark:border-white/10
+        "
+      >
 
         {/* Header */}
-        <div className="mb-4 flex justify-between">
-          <h1 className="text-xl font-semibold">Exchange your credits</h1>
+          <h1 className="text-xl mb-4 font-semibold dark:text-white">Exchange your credits</h1>
           
-        </div>
 
         {/* SELL */}
         <div className="rounded-lg dark:bg-blue-950 p-4 items-center-safe border-2 hover:border-b-cyan-500">
-          <div className="flex justify-between text-xs mb-4 font-semibold">
-            <div>Sell</div>
-              <div className="flex justify-between gap-2">
-                  Balance: {usableBalance.toFixed(6)} {fromToken?.symbol}
+          <div className="flex justify-between text-sm mb-4 font-semibold ">
+            <div className="text-4xl
+            sm:text-sm
+            lg:text-lg
+            font-semibold
+            tracking-tight
+            leading-[1.05]
+            max-w-5xl">Sell</div>
+              <div className="flex justify-between gap-2 dark:text-gray-400 text-gray-600">
+                  Available: {usableBalance.toFixed(6)} {fromToken?.symbol}
                 {fromToken?.id === SOL_MINT? <div className="flex gap-1">
                   <Button className={`bg-transparent border-2 text-gray-700 dark:text-amber-50 hover:bg-teal-200 dark:hover:bg-amber-700 ${halfClicked ? 'bg-teal-200 dark:!bg-amber-700' : ''}`} size="xs" onClick={halfBalance}>Half</Button>
                   <Button className={`bg-transparent border-2 text-gray-700 dark:text-amber-50 hover:bg-teal-200 dark:hover:bg-amber-700 ${maxClicked ? 'bg-teal-200 dark:!bg-amber-700' : ''}`} size="xs" onClick={maxBalance}>Max</Button>
@@ -364,7 +382,14 @@ export default function ExchangeFrame() {
 
         {/* BUY */}
         <div className="rounded-lg dark:bg-slate-800 p-4 mb-4 border-2 hover:border-b-slate-500 font-semibold">
-          <span className="text-xs mb-4 flex">Buy</span>
+          <span className="
+          flex mb-4
+            sm:text-sm
+            lg:text-lg
+            font-semibold
+            tracking-tight
+            leading-[1.05]
+            max-w-5xl">Buy</span>
          <div className="flex justify-between items-center gap-2">
             <button
             onClick={() => { setSelectingSide("to"); setSelectorOpen(true); }}
@@ -391,7 +416,7 @@ export default function ExchangeFrame() {
         {error && (
           <p className="mb-2 text-sm text-red-500">{error}</p>
         )}
-                {/* 🧠 AI Risk Display */}
+        {/*Risk Display */}
         {risk && (
           <div className="mb-2 px-2 py-2 rounded border border-gray-300 dark:border-neutral-700">
             
@@ -433,12 +458,12 @@ export default function ExchangeFrame() {
 
             {risk.level === "HIGH" && (
               <p className="text-[10px] text-red-400 mt-1">
-                ⚠️ Possible sandwich attack detected
+                Possible sandwich attack detected
               </p>
             )}
           </div>
         )}
-        {/* 🔒 Auto Protect */}
+        {/* Auto-protect */}
         <div className="flex items-center justify-between mb-2 text-xs">
           <span className="opacity-70">Auto-Protect</span>
           <input
@@ -464,7 +489,64 @@ export default function ExchangeFrame() {
         >
           {swapLoading? "Swapping...": quoteLoading? "Fetching quote...": insufficientBalance? "Insufficient balance": !connection.rpcEndpoint.includes("mainnet")? "Swap available only for mainnet": isSameToken? "Select different tokens": "Swap"}
         </Button>
-      </div>
     </div>
+              {/* About Aroha */}
+        <div className="
+          w-full
+          h-full
+          mx-auto
+          mt-10
+        ">
+          <p className="
+            text-sm
+            leading-relaxed
+            text-gray-600
+            dark:text-gray-400
+          ">
+            Aroha DEX combines Solana swaps with real-time AI protection.
+            The platform analyzes transaction conditions before execution
+            to help users avoid unsafe routes, excessive slippage, and
+            risky swap behavior.
+          </p>
+
+          <div className="
+            flex
+            flex-wrap
+            justify-center
+            gap-2
+            mt-5
+          ">
+            <div className="
+              px-3 py-1
+              rounded-full
+              text-xs
+              bg-black/5
+              dark:bg-white/5
+            ">
+              AI Risk Detection
+            </div>
+
+            <div className="
+              px-3 py-1
+              rounded-full
+              text-xs
+              bg-black/5
+              dark:bg-white/5
+            ">
+              MEV Protection
+            </div>
+
+            <div className="
+              px-3 py-1
+              rounded-full
+              text-xs
+              bg-black/5
+              dark:bg-white/5
+            ">
+              Solana Powered
+            </div>
+          </div>
+        </div>
+        </div>
   );
 }

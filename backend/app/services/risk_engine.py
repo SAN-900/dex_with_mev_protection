@@ -22,7 +22,7 @@ def calculate_risk(data):
     features = np.array([[
         data.amount,
         data.fee if hasattr(data, "fee") else 0.0,
-        data.instruction_count,
+        data.routeComplexity,
         data.routeComplexity,
         data.priceImpact
     ]])
@@ -50,6 +50,7 @@ def calculate_risk(data):
 
     elif data.amount > 3:
         prob += 0.07
+
 
     prob = max(0.05, min(prob, 0.95))
     level = (

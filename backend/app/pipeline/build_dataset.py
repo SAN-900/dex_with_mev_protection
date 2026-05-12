@@ -1,5 +1,5 @@
 import pandas as pd
-from backend.app.pipeline.labeler import label_data
+from labeler import label_data
 from feature_builder import extract_features
 import os
 

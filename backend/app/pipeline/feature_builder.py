@@ -1,5 +1,6 @@
 import json
 import os
+import random
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -26,15 +27,17 @@ def extract_features(tx_json_str):
         if not is_swap:
             return None
 
-        amount = fee / 1e6
-        price_impact = fee / 1e7
-        route_complexity = max(1, instruction_count // 2)
+        amount = round((fee / 5000) * 0.01, 4) 
+        slippage = round(random.uniform(0.1, 2.0), 2)
+        route_complexity = max(1,instruction_count // 2)
+        price_impact = round( min(0.3, route_complexity * 0.015), 4 )
 
         return {
             "amount": amount,
+            "slippage": slippage,
             "fee": fee,
-            "instruction_count": instruction_count,
             "routeComplexity": route_complexity,
+            "instruction_count": instruction_count,
             "priceImpact": price_impact,
         }
 

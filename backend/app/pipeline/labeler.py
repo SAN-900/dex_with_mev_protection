@@ -1,12 +1,27 @@
 def label_data(features):
-    risk = 0
 
+    score = 0
+
+    # Significant price impact
     if features["priceImpact"] > 0.08:
-        risk += 1
-    if features["routeComplexity"] > 3:
-        risk += 1
+        score += 1
+
+    # Complex route
+    if features["routeComplexity"] > 5:
+        score += 1
+
+    # Large trade
     if features["amount"] > 10:
-        risk += 1
-    if features["slippage"] > 1:
-        risk += 1
-    return 1 if risk >= 2 else 0
+        score += 1
+
+    # High slippage
+    if features["slippage"] > 1.5:
+        score += 1
+
+    if score == 0:
+        return 0   # LOW
+
+    elif score <= 2:
+        return 1   # MEDIUM
+
+    return 2       # HIGH

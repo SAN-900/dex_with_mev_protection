@@ -1,32 +1,32 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react'
 
 export default function LazyTokenImage({
   src,
   alt,
 }: {
-  src?: string;
-  alt?: string;
+  src?: string
+  alt?: string
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const el = ref.current
+    if (!el) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
+          setVisible(true)
+          observer.disconnect()
         }
       },
-      { rootMargin: "100px" } // preload slightly before visible
-    );
+      { rootMargin: '100px' } // preload slightly before visible
+    )
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div
@@ -41,10 +41,10 @@ export default function LazyTokenImage({
           decoding="async"
           className="w-6 h-6 rounded-full"
           onError={(e) => {
-            e.currentTarget.src = "/fallback-token.png";
+            e.currentTarget.src = '/fallback-token.png'
           }}
         />
       )}
     </div>
-  );
+  )
 }

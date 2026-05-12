@@ -186,10 +186,12 @@ export default function ExchangeFrame() {
             liquidity: features.liquidity,
             priceImpact: features.priceImpact,
             routeComplexity: features.routeComplexity,
+            instruction_count: quote?.routePlan?.length || 3,
             fee: quote?.contextSlot || 0
           });
 
           setRisk(riskRes);
+          setError("");
         };
 
         runRisk();
@@ -216,31 +218,30 @@ export default function ExchangeFrame() {
           setSwapLoading(false);
           return;
         }
+        if (autoProtect) {
 
-        if (riskRes.risk > 0.9) {
-          alert("Extremely unsafe trade blocked.");
-          setSwapLoading(false);
-          return;
-        }
+          // Hard block extremely unsafe swaps
+          if (riskRes.risk > 0.95) {
+            alert("Extremely unsafe trade blocked.");
+            setSwapLoading(false);
+            return;
+          }
 
-        if (riskRes.risk > 0.6) {
-            if (features.routeComplexity > 2) {
+          // Strong protection for high risk
+          if (riskRes.risk > 0.8) {
+
+            if (features.routeComplexity > 5) {
               alert("Unsafe route detected. Try smaller trade.");
               setSwapLoading(false);
               return;
             }
 
             const proceed = confirm(
-          `HIGH MEV RISK (${(riskRes.risk * 100).toFixed(0)}%)
+              `HIGH RISK DETECTED
 
-          Signals:
-          • Price impact spike
-          • Low liquidity
-          • Complex route
+        Potential MEV or liquidity instability detected.
 
-          ${features.amount > 2 ? "Large trade detected\n" : ""}
-
-          Proceed anyway?`
+        Proceed anyway?`
             );
 
             if (!proceed) {
@@ -249,15 +250,41 @@ export default function ExchangeFrame() {
             }
           }
 
-        if (autoProtect && riskRes.risk > 0.6) {
-          const saferSlippage = 0.5;
+          // Auto slippage protection
+          if (riskRes.risk > 0.75) {
 
-          if (slippage !== saferSlippage) {
-            setSlippage(saferSlippage);
+            const saferSlippage = 0.5;
 
-            alert("Slippage reduced. Recalculating safer route...");
-            setSwapLoading(false);
-            return; //
+            if (slippage !== saferSlippage) {
+
+              setSlippage(saferSlippage);
+
+              alert("AI Protection adjusted slippage for safer execution.");
+
+              setSwapLoading(false);
+              return;
+            }
+          }
+
+        } else {
+
+          // Auto-Protect OFF → warnings only
+          if (riskRes.risk > 0.9) {
+
+            const proceed = confirm(
+              `WARNING
+
+        High execution risk detected.
+
+        Auto-Protect is disabled.
+
+        Continue anyway?`
+            );
+
+            if (!proceed) {
+              setSwapLoading(false);
+              return;
+            }
           }
         }
 
@@ -275,7 +302,7 @@ export default function ExchangeFrame() {
       }
     };
   return (
-    <div className="h-screen w-full flex flex-col">
+    <div className="min-h-screen w-full flex flex-col">
       <div
         className="
           w-3/4
@@ -296,13 +323,26 @@ export default function ExchangeFrame() {
       >
 
         {/* Header */}
+        <div className="mb-4 flex justify-between">
           <h1 className="text-xl mb-4 font-semibold dark:text-white">Exchange your credits</h1>
-          
+          <div
+            className="
+              px-3
+              py-1
+              border-cyan-500/20
+              text-xs
+              text-cyan-700
+              dark:text-cyan-300
+              font-medium
+            "
+          >slippage: {slippage}%
+          </div>
+        </div>
 
         {/* SELL */}
-        <div className="rounded-lg dark:bg-blue-950 p-4 items-center-safe border-2 hover:border-b-cyan-500">
+        <div className="rounded-xl dark:bg-blue-950 p-4 items-center-safe border-2 hover:border-b-cyan-500">
           <div className="flex justify-between text-sm mb-4 font-semibold ">
-            <div className="text-4xl
+            <div className="
             sm:text-sm
             lg:text-lg
             font-semibold
@@ -381,7 +421,7 @@ export default function ExchangeFrame() {
         </div>
 
         {/* BUY */}
-        <div className="rounded-lg dark:bg-slate-800 p-4 mb-4 border-2 hover:border-b-slate-500 font-semibold">
+        <div className="rounded-xl dark:bg-slate-800 p-4 mb-4 border-2 hover:border-b-slate-500 font-semibold">
           <span className="
           flex mb-4
             sm:text-sm
@@ -414,11 +454,21 @@ export default function ExchangeFrame() {
         </div>
 
         {error && (
-          <p className="mb-2 text-sm text-red-500">{error}</p>
+          <div className="
+            mt-3
+            mb-3
+            rounded-xl
+            border
+            border-red-500/30
+            bg-red-500/10
+            p-3
+          ">
+              {error}
+          </div>
         )}
         {/*Risk Display */}
         {risk && (
-          <div className="mb-2 px-2 py-2 rounded border border-gray-300 dark:border-neutral-700">
+          <div className="mb-2 px-2 py-2 rounded-xl border border-gray-300 dark:border-neutral-700">
             
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold">
@@ -438,11 +488,7 @@ export default function ExchangeFrame() {
                 {(risk.risk * 100).toFixed(0)}%
               </span>
 
-              <span className="text-[10px] opacity-70">
-            Confidence: {(risk.confidence * 100).toFixed(0)}%
-          </span>
             </div>
-
             <div className="w-full h-1 mt-1 bg-gray-200 rounded">
               <div
                 className={`h-1 rounded ${
@@ -463,15 +509,45 @@ export default function ExchangeFrame() {
             )}
           </div>
         )}
+    
         {/* Auto-protect */}
         <div className="flex items-center justify-between mb-2 text-xs">
           <span className="opacity-70">Auto-Protect</span>
           <input
             type="checkbox"
             checked={autoProtect}
-            onChange={(e) => setAutoProtect(e.target.checked)}
+            onChange={(e) => { const enabled = e.target.checked; 
+              setAutoProtect(enabled); 
+              if (!enabled) 
+                { setRisk(null); 
+
+                } 
+              }}
           />
         </div>
+        {autoProtect?<div className="
+          mt-4
+          mb-4
+          rounded-xl
+          border
+          border-neutral-800
+          dark:bg-black
+          bg-cyan-50
+          p-3
+          font-mono
+          text-[11px]
+        ">
+
+          {risk?.level === "HIGH" && (
+            <div className="text-red-400 mt-1 animate-pulse">
+              Potential MEV activity detected
+            </div>
+          )}
+
+          <div className="dark:text-cyan-400 text-cyan-700 mt-1">
+            AI confidence: {risk ? (risk.confidence * 100).toFixed(0) : 0}%
+          </div>
+        </div>: null}
 
         <Button
           className="w-full"
@@ -487,7 +563,7 @@ export default function ExchangeFrame() {
           }
           onClick={handleSwap}
         >
-          {swapLoading? "Swapping...": quoteLoading? "Fetching quote...": insufficientBalance? "Insufficient balance": !connection.rpcEndpoint.includes("mainnet")? "Swap available only for mainnet": isSameToken? "Select different tokens": "Swap"}
+          {swapLoading? "Swapping...": quoteLoading? "Fetching quote...": insufficientBalance? "Insufficient balance": !connection.rpcEndpoint.includes("mainnet")? "Switch to mainnet": isSameToken? "Select different tokens": "Swap"}
         </Button>
     </div>
               {/* About Aroha */}
@@ -511,7 +587,6 @@ export default function ExchangeFrame() {
 
           <div className="
             flex
-            flex-wrap
             justify-center
             gap-2
             mt-5

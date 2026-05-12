@@ -1,7 +1,12 @@
 import { PublicKey } from '@solana/web3.js'
 import { useMemo } from 'react'
 import { ExplorerLink } from '../cluster/cluster-ui'
-import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
+import {
+  AccountBalance,
+  AccountButtons,
+  AccountTokens,
+  AccountTransactions,
+} from './account-ui'
 import { AppHero } from '../app-hero'
 import { ellipsify } from '@/lib/utils'
 import { useParams } from 'react-router'
@@ -28,7 +33,10 @@ export default function AccountDetailFeature() {
         title={<AccountBalance address={address} />}
         subtitle={
           <div className="my-4">
-            <ExplorerLink path={`account/${address}`} label={ellipsify(address.toString())} />
+            <ExplorerLink
+              path={`account/${address}`}
+              label={ellipsify(address.toString())}
+            />
           </div>
         }
       >

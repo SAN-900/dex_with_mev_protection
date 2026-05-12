@@ -3,3 +3,6 @@
 /coverage
 tmp
 pnpm-lock.yaml
+node_modules
+build
+package-lock.json

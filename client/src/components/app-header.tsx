@@ -6,7 +6,11 @@ import { ClusterUiSelect } from './cluster/cluster-ui'
 import { WalletButton } from '@/components/solana/solana-provider'
 import { Link, useLocation } from 'react-router'
 
-export function AppHeader({ links = [] }: { links: { label: string; path: string }[] }) {
+export function AppHeader({
+  links = [],
+}: {
+  links: { label: string; path: string }[]
+}) {
   const { pathname } = useLocation()
   const [showMenu, setShowMenu] = useState(false)
 
@@ -18,12 +22,11 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
     <header className="relative z-50 px-4 py-2 bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-400">
       <div className="mx-auto flex justify-between items-center">
         <div className="flex items-center gap-8">
-            
-            {/* Brand */}
-            <Link to="/" className="flex items-center gap-3">
-              
-              {/* Logo */}
-              <div className="
+          {/* Brand */}
+          <Link to="/" className="flex items-center gap-3">
+            {/* Logo */}
+            <div
+              className="
                 w-9 h-9
                 rounded-xl
                 bg-black
@@ -34,19 +37,19 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
                 font-semibold
                 text-sm
                 shrink-0
-              ">
-                A
-              </div>
+              "
+            >
+              A
+            </div>
+          </Link>
 
-            </Link>
-
-            {/* Desktop Links */}
-            <div className="hidden md:flex items-center">
-              <ul className="flex gap-4 flex-nowrap items-center">
-                {links.map(({ label, path }) => (
-                  <li key={path}>
-                    <Link
-                      className={`
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center">
+            <ul className="flex gap-4 flex-nowrap items-center">
+              {links.map(({ label, path }) => (
+                <li key={path}>
+                  <Link
+                    className={`
                         hover:text-neutral-500
                         dark:hover:text-white
                         transition-colors
@@ -56,17 +59,22 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
                             : 'text-neutral-500 dark:text-neutral-400'
                         }
                       `}
-                      to={path}
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    to={path}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
+        </div>
 
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setShowMenu(!showMenu)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={() => setShowMenu(!showMenu)}
+        >
           {showMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </Button>
 

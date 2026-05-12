@@ -1,5 +1,5 @@
-import solImage from './assest/image.png';
-import arrowImage from './assest/arrow.png';
+import solImage from './assest/image.png'
+import arrowImage from './assest/arrow.png'
 
-export {solImage as SolImage};
-export { arrowImage as ArrowImage };
+export { solImage as SolImage }
+export { arrowImage as ArrowImage }

@@ -16,7 +16,14 @@ import {
 import { ellipsify } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { AppModal } from '@/components/app-modal'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,7 +32,10 @@ export function AccountBalance({ address }: { address: PublicKey }) {
   const query = useGetBalance({ address })
 
   return (
-    <h1 className="text-5xl font-bold cursor-pointer" onClick={() => query.refetch()}>
+    <h1
+      className="text-5xl font-bold cursor-pointer"
+      onClick={() => query.refetch()}
+    >
       {query.data ? <BalanceSol balance={query.data} /> : '...'} SOL
     </h1>
   )
@@ -51,12 +61,18 @@ export function AccountBalanceCheck({ address }: { address: PublicKey }) {
     return (
       <AppAlert
         action={
-          <Button variant="outline" onClick={() => mutation.mutateAsync(1).catch((err) => console.log(err))}>
+          <Button
+            variant="outline"
+            onClick={() =>
+              mutation.mutateAsync(1).catch((err) => console.log(err))
+            }
+          >
             Request Airdrop
           </Button>
         }
       >
-        You are connected to <strong>{cluster.name}</strong> but your account is not found on this cluster.
+        You are connected to <strong>{cluster.name}</strong> but your account is
+        not found on this cluster.
       </AppAlert>
     )
   }
@@ -69,7 +85,9 @@ export function AccountButtons({ address }: { address: PublicKey }) {
   return (
     <div>
       <div className="space-x-2">
-        {cluster.network?.includes('mainnet') ? null : <ModalAirdrop address={address} />}
+        {cluster.network?.includes('mainnet') ? null : (
+          <ModalAirdrop address={address} />
+        )}
         <ModalSend address={address} />
         <ModalReceive address={address} />
         <Button variant="outline" onClick={() => navigate('/swap')}>
@@ -113,7 +131,11 @@ export function AccountTokens({ address }: { address: PublicKey }) {
           </div>
         </div>
       </div>
-      {query.isError && <pre className="alert alert-error">Error: {query.error?.message.toString()}</pre>}
+      {query.isError && (
+        <pre className="alert alert-error">
+          Error: {query.error?.message.toString()}
+        </pre>
+      )}
       {query.isSuccess && (
         <div>
           {query.data.length === 0 ? (
@@ -133,7 +155,10 @@ export function AccountTokens({ address }: { address: PublicKey }) {
                     <TableCell>
                       <div className="flex space-x-2">
                         <span className="font-mono">
-                          <ExplorerLink label={ellipsify(pubkey.toString())} path={`account/${pubkey.toString()}`} />
+                          <ExplorerLink
+                            label={ellipsify(pubkey.toString())}
+                            path={`account/${pubkey.toString()}`}
+                          />
                         </span>
                       </div>
                     </TableCell>
@@ -148,7 +173,9 @@ export function AccountTokens({ address }: { address: PublicKey }) {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <span className="font-mono">{account.data.parsed.info.tokenAmount.uiAmount}</span>
+                      <span className="font-mono">
+                        {account.data.parsed.info.tokenAmount.uiAmount}
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -156,7 +183,10 @@ export function AccountTokens({ address }: { address: PublicKey }) {
                 {(query.data?.length ?? 0) > 5 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
-                      <Button variant="outline" onClick={() => setShowAll(!showAll)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowAll(!showAll)}
+                      >
                         {showAll ? 'Show Less' : 'Show All'}
                       </Button>
                     </TableCell>
@@ -194,7 +224,11 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
           )}
         </div>
       </div>
-      {query.isError && <pre className="alert alert-error">Error: {query.error?.message.toString()}</pre>}
+      {query.isError && (
+        <pre className="alert alert-error">
+          Error: {query.error?.message.toString()}
+        </pre>
+      )}
       {query.isSuccess && (
         <div>
           {query.data.length === 0 ? (
@@ -213,15 +247,26 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
                 {items?.map((item) => (
                   <TableRow key={item.signature}>
                     <TableHead className="font-mono">
-                      <ExplorerLink path={`tx/${item.signature}`} label={ellipsify(item.signature, 8)} />
+                      <ExplorerLink
+                        path={`tx/${item.signature}`}
+                        label={ellipsify(item.signature, 8)}
+                      />
                     </TableHead>
                     <TableCell className="font-mono text-right">
-                      <ExplorerLink path={`block/${item.slot}`} label={item.slot.toString()} />
+                      <ExplorerLink
+                        path={`block/${item.slot}`}
+                        label={item.slot.toString()}
+                      />
                     </TableCell>
-                    <TableCell>{new Date((item.blockTime ?? 0) * 1000).toISOString()}</TableCell>
+                    <TableCell>
+                      {new Date((item.blockTime ?? 0) * 1000).toISOString()}
+                    </TableCell>
                     <TableCell className="text-right">
                       {item.err ? (
-                        <span className="text-red-500" title={item.err.toString()}>
+                        <span
+                          className="text-red-500"
+                          title={item.err.toString()}
+                        >
                           Failed
                         </span>
                       ) : (
@@ -233,7 +278,10 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
                 {(query.data?.length ?? 0) > 5 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
-                      <Button variant="outline" onClick={() => setShowAll(!showAll)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowAll(!showAll)}
+                      >
                         {showAll ? 'Show Less' : 'Show All'}
                       </Button>
                     </TableCell>
@@ -249,7 +297,9 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
 }
 
 function BalanceSol({ balance }: { balance: number }) {
-  return <span>{Math.round((balance / LAMPORTS_PER_SOL) * 100000) / 100000}</span>
+  return (
+    <span>{Math.round((balance / LAMPORTS_PER_SOL) * 100000) / 100000}</span>
+  )
 }
 
 function ModalReceive({ address }: { address: PublicKey }) {

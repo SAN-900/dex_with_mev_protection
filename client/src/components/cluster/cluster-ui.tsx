@@ -3,11 +3,24 @@ import { useQuery } from '@tanstack/react-query'
 import * as React from 'react'
 
 import { useCluster } from './cluster-data-access'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { AppAlert } from '@/components/app-alert'
 
-export function ExplorerLink({ path, label, className }: { path: string; label: string; className?: string }) {
+export function ExplorerLink({
+  path,
+  label,
+  className,
+}: {
+  path: string
+  label: string
+  className?: string
+}) {
   const { getExplorerUrl } = useCluster()
   return (
     <a
@@ -42,7 +55,8 @@ export function ClusterChecker({ children }: { children: React.ReactNode }) {
           </Button>
         }
       >
-        Error connecting to cluster <span className="font-bold">{cluster.name}</span>.
+        Error connecting to cluster{' '}
+        <span className="font-bold">{cluster.name}</span>.
       </AppAlert>
     )
   }

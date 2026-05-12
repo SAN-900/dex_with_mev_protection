@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { getQuote, TokenInfo } from "@/lib/utils";
+import { useEffect, useState } from 'react'
+import { getQuote, TokenInfo } from '@/lib/utils'
 
 type UseQuoteParams = {
-  fromToken: TokenInfo | null;
-  toToken: TokenInfo | null;
-  amount: string;
-  slippage: number;
-  disabled?: boolean;
-};
+  fromToken: TokenInfo | null
+  toToken: TokenInfo | null
+  amount: string
+  slippage: number
+  disabled?: boolean
+}
 
 export function useQuote({
   fromToken,
@@ -16,14 +16,11 @@ export function useQuote({
   slippage,
   disabled = false,
 }: UseQuoteParams) {
-  const [quote, setQuote] = useState<any | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [quote, setQuote] = useState<any | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string>('')
 
-  const isSameToken =
-    !!fromToken &&
-    !!toToken &&
-    fromToken.id === toToken.id;
+  const isSameToken = !!fromToken && !!toToken && fromToken.id === toToken.id
 
   useEffect(() => {
     // ---------- Guards ----------
@@ -35,54 +32,49 @@ export function useQuote({
       !amount ||
       Number(amount) <= 0
     ) {
-      setQuote(null);
-      setLoading(false);
-      setError("");
-      return;
+      setQuote(null)
+      setLoading(false)
+      setError('')
+      return
     }
 
-    let cancelled = false;
-    setLoading(true);
+    let cancelled = false
+    setLoading(true)
 
     const id = setTimeout(async () => {
       try {
-        const q = await getQuote(
-          fromToken,
-          toToken,
-          Number(amount),
-          slippage
-        );
-        if(!q) {
-          setQuote(null);
-          setError("No quote found");
-          throw new Error("No quote found");
+        const q = await getQuote(fromToken, toToken, Number(amount), slippage)
+        if (!q) {
+          setQuote(null)
+          setError('No quote found')
+          throw new Error('No quote found')
         }
-        if (cancelled) return;
+        if (cancelled) return
 
-        setQuote(q);
-        setError("");
+        setQuote(q)
+        setError('')
       } catch (e) {
         if (!cancelled) {
-          setQuote(null);
-          setError("Failed to fetch quote");
+          setQuote(null)
+          setError('Failed to fetch quote')
         }
       } finally {
         if (!cancelled) {
-          setLoading(false);
+          setLoading(false)
         }
       }
-    }, 400); // debounce
+    }, 400) // debounce
 
     return () => {
-      cancelled = true;
-      clearTimeout(id);
-    };
-  }, [fromToken, toToken, amount, slippage, disabled, isSameToken]);
+      cancelled = true
+      clearTimeout(id)
+    }
+  }, [fromToken, toToken, amount, slippage, disabled, isSameToken])
 
   return {
     quote,
     loading,
     error,
     isSameToken,
-  };
+  }
 }

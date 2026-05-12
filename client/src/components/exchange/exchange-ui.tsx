@@ -1,17 +1,16 @@
-import { PublicKey } from "@solana/web3.js"
-import { useMemo } from "react"
-import { useParams } from "react-router"
-import { AppHero } from "../app-hero"
-import ExchangeFrame from "./exchange-frame"
+import { PublicKey } from '@solana/web3.js'
+import { useMemo } from 'react'
+import { useParams } from 'react-router'
+import { AppHero } from '../app-hero'
+import ExchangeFrame from './exchange-frame'
 
-
-export default function Exchange(){
-    const params = useParams() as { address: string }
-    const address = useMemo(() => {
+export default function Exchange() {
+  const params = useParams() as { address: string }
+  const address = useMemo(() => {
     if (!params.address) {
       return
     }
-      try {
+    try {
       return new PublicKey(params.address)
     } catch (e) {
       console.log(`Invalid public key`, e)
@@ -21,12 +20,11 @@ export default function Exchange(){
     return <div>Error loading account</div>
   }
 
-    return (
-        <div>
-            <AppHero> 
-                <ExchangeFrame />
-            </AppHero>
-        </div>
-    )
-
+  return (
+    <div>
+      <AppHero>
+        <ExchangeFrame />
+      </AppHero>
+    </div>
+  )
 }

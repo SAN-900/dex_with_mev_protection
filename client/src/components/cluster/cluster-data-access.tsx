@@ -23,10 +23,12 @@ export enum ClusterNetwork {
 export const defaultClusters: SolanaCluster[] = [
   {
     name: 'devnet',
-    endpoint: "https://solana-devnet.g.alchemy.com/v2/ml9aEBioGgZNsQraskqAcuwWTUpxEGFK",
+    endpoint:
+      'https://solana-devnet.g.alchemy.com/v2/ml9aEBioGgZNsQraskqAcuwWTUpxEGFK',
     network: ClusterNetwork.Devnet,
   },
-  { name: 'local', 
+  {
+    name: 'local',
     endpoint: 'http://localhost:8899',
     network: ClusterNetwork.Custom,
   },
@@ -37,13 +39,20 @@ export const defaultClusters: SolanaCluster[] = [
   },
   {
     name: 'mainnet',
-    endpoint: 'https://solana-mainnet.g.alchemy.com/v2/ml9aEBioGgZNsQraskqAcuwWTUpxEGFK', // clusterApiUrl('mainnet-beta'),
+    endpoint:
+      'https://solana-mainnet.g.alchemy.com/v2/ml9aEBioGgZNsQraskqAcuwWTUpxEGFK', // clusterApiUrl('mainnet-beta'),
     network: ClusterNetwork.Mainnet,
-  }
+  },
 ]
 
-const clusterAtom = atomWithStorage<SolanaCluster>('solana-cluster', defaultClusters[0])
-const clustersAtom = atomWithStorage<SolanaCluster[]>('solana-clusters', defaultClusters)
+const clusterAtom = atomWithStorage<SolanaCluster>(
+  'solana-cluster',
+  defaultClusters[0]
+)
+const clustersAtom = atomWithStorage<SolanaCluster[]>(
+  'solana-clusters',
+  defaultClusters
+)
 
 const activeClustersAtom = atom<SolanaCluster[]>((get) => {
   const clusters = get(clustersAtom)
@@ -70,7 +79,9 @@ export interface ClusterProviderContext {
   getExplorerUrl(path: string): string
 }
 
-const Context = createContext<ClusterProviderContext>({} as ClusterProviderContext)
+const Context = createContext<ClusterProviderContext>(
+  {} as ClusterProviderContext
+)
 
 export function ClusterProvider({ children }: { children: React.ReactNode }) {
   const cluster = useAtomValue(activeClusterAtom)
@@ -93,7 +104,8 @@ export function ClusterProvider({ children }: { children: React.ReactNode }) {
       setClusters(clusters.filter((item) => item.name !== cluster.name))
     },
     setCluster: (cluster: SolanaCluster) => setCluster(cluster),
-    getExplorerUrl: (path: string) => `https://explorer.solana.com/${path}${getClusterUrlParam(cluster)}`,
+    getExplorerUrl: (path: string) =>
+      `https://explorer.solana.com/${path}${getClusterUrlParam(cluster)}`,
   }
   return <Context.Provider value={value}>{children}</Context.Provider>
 }

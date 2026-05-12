@@ -4,14 +4,10 @@ A full-stack AI + Web3 system built on Solana for intelligent swap risk predicti
 
 ## Repositories Structure
 
-```text
 project/
 ├── client/     → Frontend application
 ├── server/     → Jupiter proxy server
 └── backend/    → AI + ML backend
-````
-
----
 
 # Components
 
@@ -43,11 +39,8 @@ AI engine for:
 * risk prediction
 * continuous retraining
 
----
-
 # Complete Architecture
 
-```text
 Frontend (client)
         ↓
 Jupiter Proxy Server (server)
@@ -57,9 +50,6 @@ AI Backend (backend)
 ML Risk Engine
         ↓
 Solana Blockchain
-```
-
----
 
 # Deployment
 
@@ -84,19 +74,6 @@ Deploy on:
 * Render
 * Railway
 
----
-
-# License
-
-MIT
-
-````
-
----
-
-# client/README.md
-
-```md
 # Client
 
 Frontend application for the AI-powered MEV protection system.
@@ -120,25 +97,17 @@ Frontend application for the AI-powered MEV protection system.
 
 ## Run Locally
 
-```bash
 npm install
 npm run dev
-````
+
 
 ## Environment Variables
 
-```env
+.env
 VITE_API_URL=your_backend_url
 VITE_PROXY_URL=your_proxy_url
-```
 
-````
 
----
-
-# server/README.md
-
-```md
 # Jupiter Proxy Server
 
 Backend proxy server for secure interaction with Jupiter APIs.
@@ -158,38 +127,26 @@ Backend proxy server for secure interaction with Jupiter APIs.
 
 ## Endpoints
 
-```text
 /jupiter/quote
 /jupiter/swap
 /jupiter/tokens
-````
 
 ## Run Locally
 
-```bash
+bash
 npm install
 npm run dev
-```
 
 ## Build
 
-```bash
+bash
 npm run build
 npm start
-```
 
-````
-
----
-
-# backend/README.md
-
-```md
 # AI-Powered MEV Protection Engine for Solana
 
 An AI + Web3 system that predicts risky swap execution conditions on Solana and applies intelligent protection mechanisms before transaction execution.
 
----
 
 ## Features
 
@@ -202,11 +159,9 @@ An AI + Web3 system that predicts risky swap execution conditions on Solana and 
 - Route complexity analysis
 - Live frontend risk visualization
 
----
 
 # Architecture
 
-```text
 Solana Blockchain
         ↓
 solana_listener.py
@@ -226,9 +181,7 @@ risk_engine.py
 FastAPI
         ↓
 Frontend
-````
 
----
 
 # Tech Stack
 
@@ -253,11 +206,8 @@ Frontend
 * Solana
 * Jupiter Aggregator
 
----
-
 # Backend Structure
 
-```text
 backend/
 ├── app/
 │   ├── listener/
@@ -271,49 +221,40 @@ backend/
 │
 ├── requirements.txt
 └── README.md
-```
-
----
 
 # Setup
 
 ## Backend
 
-```bash
+bash
 pip install -r requirements.txt
-```
 
 Run API:
 
-```bash
+bash
 uvicorn app.main:app --reload
-```
 
 Run Continuous ML Engine:
 
-```bash
+bash
 python app/runner.py
-```
 
----
 
 # API Endpoints
 
 ## Health Check
 
-```text
+text
 GET /
-```
 
 ## Risk Prediction
 
-```text
+text
 POST /predict-risk
-```
 
 Example Request:
 
-```json
+json
 {
   "amount": 100,
   "slippage": 0.5,
@@ -322,19 +263,16 @@ Example Request:
   "routeComplexity": 2,
   "fee": 5000
 }
-```
 
 Example Response:
 
-```json
+json
 {
   "risk": 0.51,
   "level": "MEDIUM",
   "confidence": 0.51
 }
-```
 
----
 
 # AI Pipeline
 
@@ -360,7 +298,7 @@ The frontend includes an automatic protection layer that reacts dynamically to A
 
 ## Protection Logic
 
-```text
+text
 AI Risk Score
       ↓
 Risk Analysis
@@ -368,7 +306,6 @@ Risk Analysis
 Protection Rules
       ↓
 Swap Decision
-```
 
 Example:
 
@@ -377,209 +314,21 @@ Example:
 * Large swap → split trade recommendation
 * Unsafe conditions → slippage tightened automatically
 
----
 
 # Live Testing URLs
 
 ## Frontend
 
-```text
+text
 https://aroha-dex.vercel.app/
-```
+
 
 ## AI Backend API
 
-```text
+text
 https://dex-with-mev-protection-ml.onrender.com/docs
-```
 
 ## Jupiter Proxy Server
 
-```text
+text
 https://your-jupiter-server.onrender.com/jupiter/tokens
-```
-
----
-
-# Future Improvements
-
-* Real DEX instruction decoding
-* Advanced MEV pattern detection
-* Reinforcement learning execution
-* Streaming data pipeline
-* Websocket live monitoring
-
----
-
-# License
-
-MIT
-
-````
-
----
-
-# backend/app/listener/README.md
-
-```md
-# Listener Module
-
-This module listens to live Solana blockchain transactions and filters swap-like token movement transactions.
-
-## Responsibilities
-
-- Fetch latest Solana blocks
-- Parse transactions
-- Detect swap-like activity
-- Store raw transaction data
-
-## Main File
-
-- `solana_listener.py`
-
-## Output
-
-Transactions are stored in:
-
-```text
-app/data/raw_data.jsonl
-````
-
-````
-
----
-
-# backend/app/pipeline/README.md
-
-```md
-# Pipeline Module
-
-This module converts raw blockchain transactions into structured machine learning datasets.
-
-## Responsibilities
-
-- Extract ML features
-- Generate heuristic labels
-- Build structured dataset
-
-## Files
-
-- `feature_builder.py`
-- `labeler.py`
-- `build_dataset.py`
-
-## Output
-
-```text
-app/data/dataset.csv
-````
-
-````
-
----
-
-# backend/app/trainer/README.md
-
-```md
-# Trainer Module
-
-This module trains the machine learning model used for risk prediction.
-
-## Responsibilities
-
-- Load dataset
-- Train classifier
-- Save trained model
-
-## Main File
-
-- `train_model.py`
-
-## Output
-
-```text
-app/services/model.pkl
-````
-
-````
-
----
-
-# backend/app/services/README.md
-
-```md
-# Services Module
-
-This module contains the ML inference engine.
-
-## Responsibilities
-
-- Load trained model
-- Run inference
-- Return risk prediction
-
-## Files
-
-- `risk_engine.py`
-- `model.pkl`
-````
-
----
-
-# backend/app/schemas/README.md
-
-```md
-# Schemas Module
-
-This module contains request validation schemas used by FastAPI.
-
-## Responsibilities
-
-- Validate API request payloads
-- Define prediction input structure
-
-## Files
-
-- `swap_schema.py`
-```
-
----
-
-# backend/app/data/README.md
-
-```md
-# Data Module
-
-This folder stores raw blockchain data and structured ML datasets.
-
-## Files
-
-- `raw_data.jsonl`
-- `dataset.csv`
-
-## Notes
-
-These files are excluded from Git tracking using `.gitignore`.
-```
-
----
-
-# backend/app/README.md
-
-```md
-# App Module
-
-Core backend application for the AI-powered MEV protection engine.
-
-## Components
-
-- Blockchain listener
-- ML pipeline
-- Model trainer
-- FastAPI inference server
-- Continuous retraining engine
-
-## Entry Files
-
-- `main.py`
-- `runner.py`

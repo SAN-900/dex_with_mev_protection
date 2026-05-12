@@ -26,15 +26,15 @@ def extract_features(tx_json_str):
         if not is_swap:
             return None
 
-        # crude proxies (improve later)
         amount = fee / 1e6
         price_impact = fee / 1e7
+        route_complexity = max(1, instruction_count // 2)
 
         return {
             "amount": amount,
             "fee": fee,
             "instruction_count": instruction_count,
-            "routeComplexity": instruction_count,
+            "routeComplexity": route_complexity,
             "priceImpact": price_impact,
         }
 

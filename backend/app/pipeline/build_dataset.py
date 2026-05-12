@@ -1,4 +1,5 @@
 import pandas as pd
+from backend.app.pipeline.labeler import label_data
 from feature_builder import extract_features
 import os
 
@@ -19,8 +20,7 @@ with open(INPUT_FILE, "r") as f:
         if not features:
             continue
 
-        # simple label (temporary heuristic)
-        label = 1 if features["priceImpact"] > 0.01 else 0
+        label = label_data(features) 
         features["label"] = label
 
         data.append(features)

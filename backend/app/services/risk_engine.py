@@ -19,20 +19,50 @@ def get_model():
 def calculate_risk(data):
     model = get_model()
 
-    instruction_count = getattr(data, "instruction_count", data.routeComplexity)
-
     features = np.array([[
         data.amount,
         data.fee if hasattr(data, "fee") else 0.0,
-        instruction_count,
         data.routeComplexity,
+        data.instruction_count,
         data.priceImpact
     ]])
 
-    prob = model.predict_proba(features)[0][1]
+    # ML probability
+    ml_prob = model.predict_proba(features)[0][1]
+
+    prob = ml_prob * 0.4
+
+    # Heuristic adjustments
+    if data.priceImpact > 0.08:
+        prob += 0.25
+
+    elif data.priceImpact > 0.03:
+        prob += 0.12
+
+    if data.routeComplexity > 3:
+        prob += 0.2
+
+    elif data.routeComplexity > 1:
+        prob += 0.08
+
+    if data.amount > 10:
+        prob += 0.15
+
+    elif data.amount > 3:
+        prob += 0.07
+
+    if data.slippage > 1:
+        prob += 0.1
+
+    prob = max(0.05, min(prob, 0.95))
+    level = (
+        "HIGH" if prob > 0.8
+        else "MEDIUM" if prob > 0.5
+        else "LOW"
+    )
 
     return {
         "risk": float(prob),
-        "level": "HIGH" if prob > 0.7 else "MEDIUM" if prob > 0.4 else "LOW",
-        "confidence": float(prob)
+        "level": level,
+        "confidence": float(min(prob + 0.1, 0.99))
     }

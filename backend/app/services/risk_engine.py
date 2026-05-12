@@ -22,8 +22,8 @@ def calculate_risk(data):
     features = np.array([[
         data.amount,
         data.fee if hasattr(data, "fee") else 0.0,
-        data.routeComplexity,
         data.instruction_count,
+        data.routeComplexity,
         data.priceImpact
     ]])
 

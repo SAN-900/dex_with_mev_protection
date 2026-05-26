@@ -134,5 +134,5 @@ app.get("/health", (_, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Jupiter proxy running on http://localhost:${PORT}`);
+  console.log(`Jupiter proxy running on http://localhost:${PORT}`);
 });

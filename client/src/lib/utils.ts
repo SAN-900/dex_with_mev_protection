@@ -162,13 +162,13 @@ export async function getTokenBalance(
     decimals: number
   }
 ): Promise<number> {
-  // ✅ 1. SOL balance (native)
+  // SOL balance (native)
   if (token.id === SOL_MINT) {
     const lamports = await connection.getBalance(owner)
     return lamports / 1e9
   }
 
-  // ✅ 2. SPL token balance
+  // SPL token balance
   let mint: PublicKey
   try {
     mint = new PublicKey(token.id)

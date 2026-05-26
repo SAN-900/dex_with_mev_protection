@@ -29,7 +29,7 @@ DEX_PROGRAMS = {
 def fetch_block_transactions():
     try:
         slot_resp = client.get_slot()
-        slot = slot_resp.value  # ✅ correct way
+        slot = slot_resp.value  
 
         block_resp = client.get_block(
             slot,
@@ -40,7 +40,7 @@ def fetch_block_transactions():
         if not block_resp.value:
             return []
 
-        return block_resp.value.transactions  # ✅ correct
+        return block_resp.value.transactions
 
     except Exception as e:
         print("Error fetching block:", e)
@@ -54,7 +54,6 @@ def is_swap(tx):
         meta = tx_json.get("meta", {})
         logs = meta.get("logMessages", []) or []
 
-        # Ignore validator vote tx
         if any("Vote111111111111111111111111111111111111111" in log for log in logs):
             return False
 
@@ -89,7 +88,7 @@ def save_tx(tx):
         tx_dict = tx.to_json()
 
         with open(RAW_PATH, "a") as f:
-            f.write(tx_dict + "\n")  # already JSON string
+            f.write(tx_dict + "\n")
 
     except Exception as e:
         print("Save error:", e)
